@@ -1,0 +1,67 @@
+#!/usr/bin/python
+# Copyright (C) 2011 Ben Jeffrey. All Rights Reserved.
+import sys
+
+def Transform(Word):
+    """
+    Given a string, returns a list of all possible
+    derivations according to the MU puzzle rules.
+    """
+    Word = str(Word)    # Ensure input is a string
+    Transformed = []
+    
+    if Word[-1] == 'I': # Rule 1:   xxI -> xxIU
+        Transformed.append(Word + 'U')
+    if Word[0] == 'M':  # Rule 2:   Mxx -> Mxxxx
+        Transformed.append(Word+Word[1:])
+    if 'III' in Word:   # Rule 3:   xxIIIxx -> xxUxx
+        Transformed.append(Word.replace('III', 'U'))
+    if 'UU' in Word:    # Rule 4:   xxUUxx -> xxxx
+        Transformed.append(Word.replace('UU', ''))
+
+    return Transformed # Returns list of all applied transformations.
+
+
+def Run(MaxCycles=10, StartWord='MI', EndWord='MU'):
+
+    Derivatives = [StartWord]   # List of words
+    Cycles = 0
+
+    while EndWord not in Derivatives:
+
+        Cycles += 1
+        NextCycleDerivs = []
+        print Cycles, str(len(Derivatives)
+        if Cycles >= MaxCycles: # Stop if we can't find it in given number of cycles.
+            return 'Could not derive in %s cycles' % MaxCycles
+        else:                   # Otherwise:
+            for Word in Derivatives:                    # for every word in our list,
+                Transformations = Transform(Word)       # get it's derivations,
+                for Derivation in Transformations:      # and put them in a separate list.
+                    NextCycleDerivs.append(Derivation)
+
+            Derivatives += NextCycleDerivs  # After this cycle, add the new words to
+                                            # the main list to be derived next time.
+                                            
+    return (Cycles, StartWord, EndWord) # Returns a tuple at the end, if found.
+
+
+if __name__ == '__main__':
+    
+    if len(sys.argv)<2:     #Instructions!
+        print
+        print " MU finds whether you can derive 'MU' from 'MI' using the rules"
+        print " printed in Godel Escher Bach (hint - you can't) using a"
+        print " breadth-first, brute-force method."
+        print
+        print " Arguments:"
+        print "     1st argument is the number of derivation cycles to compute."
+        print "     2nd argument is the starting string."
+        print "     3rd argument is the string you want to achieve."
+        print "i.e. To run 50 cycles and see if it produces 'MI' from 'MU', then"
+        print "     at the command line, in the right directory, type:"
+        print
+        print "     ./MU.py 50 'MU' 'MI'"
+        print
+    else:
+        Run(sys.argv[1], sys.argv[2], sys.argv[3])
