@@ -21,8 +21,14 @@ def Transform(Word):
 
     return Transformed # Returns list of all applied transformations.
 
+def CycleThrough (WordList=Derivatives):
+    Derivations = []
+    for Word in WordList:               # For every word in the list,
+        Derivatives = Transform(Word)   # get it's transformations,
+        Derivations += Derivatives      # and put them in a big list.
+    return Derivations                  # Return the list for the next cycle.
 
-def Run(MaxCycles=10, StartWord='MI', EndWord='MU'):
+def Run (MaxCycles=10, StartWord='MI', EndWord='MU'):
 
     Derivatives = [StartWord]   # List of words
     Cycles = 0
@@ -30,18 +36,11 @@ def Run(MaxCycles=10, StartWord='MI', EndWord='MU'):
     while EndWord not in Derivatives:
 
         Cycles += 1
-        NextCycleDerivs = []
         print Cycles, str(len(Derivatives))
         if Cycles >= MaxCycles: # Stop if we can't find it in given number of cycles.
             return 'Could not derive in %s cycles' % MaxCycles
-        else:                   # Otherwise:
-            for Word in Derivatives:                    # for every word in our list,
-                Transformations = Transform(Word)       # get it's derivations,
-                for Derivation in Transformations:      # and put them in a separate list.
-                    NextCycleDerivs.append(Derivation)
-
-            Derivatives += NextCycleDerivs  # After this cycle, add the new words to
-                                            # the main list to be derived next time.
+        else:
+            Derivatives += CycleThrough(Derivatives)
                                             
     return (Cycles, StartWord, EndWord) # Returns a tuple at the end, if found.
 
