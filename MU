@@ -21,7 +21,7 @@ def Transform(Word):
 
     return Transformed # Returns list of all applied transformations.
 
-def CycleThrough (WordList=Derivatives):
+def CycleThrough (WordList):
     Derivations = []
     for Word in WordList:               # For every word in the list,
         Derivatives = Transform(Word)   # get it's transformations,
@@ -63,4 +63,4 @@ if __name__ == '__main__':
         print "     ./MU 50 'MU' 'MI'"
         print
     else:
-        Run(int(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]))
+        print Run(int(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]))
