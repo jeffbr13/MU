@@ -21,6 +21,7 @@ def DoleOutJobs (WordList, JobServer, NumberOfWorkers):
     #print "Each worker gets:", EachWorkerGets
     
     Derivations = []
+    ListOfWorkers = []
     
     for Worker in range(0,NumberOfWorkers):
         
@@ -29,11 +30,15 @@ def DoleOutJobs (WordList, JobServer, NumberOfWorkers):
         
         WorkerWords = WordList[StartMarker:EndMarker]
         
-        print "Range is:    %s:%s" % (StartMarker,EndMarker)
         
-        DoWork = JobServer.submit(ApplyRules, (WorkerWords,), (Transform, Rules.Transform,), ("Rules",))
+        ActualWorker = JobServer.submit(ApplyRules, (WorkerWords,), (Transform, Rules.Transform,), ("Rules",))
         
-        WhatWorkerFinds = DoWork()
+        
+        ListOfWorkers.append(ActualWorker)
+        
+    for Worker in ListOfWorkers:
+        
+        WhatWorkerFinds = Worker()
         Derivations.extend(WhatWorkerFinds)
      
     return Derivations
@@ -65,4 +70,4 @@ def Run (MaxCycles=10, StartWord='MI', EndWord='MU', Workers=1):
 	
 
 if __name__ == '__main__':
-    print Run(20, 'MI', 'MIIIIUIIUIUIIUIUU', 2)
+    print Run(20, 'MI', 'MIIUIIUIUU', 2)
