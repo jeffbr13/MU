@@ -14,71 +14,58 @@ def ApplyRules (WordList):
     return Derivations
 
 
-
-
 def DoleOutJobs (WordList, JobServer, NumberOfWorkers):
 
-    EachWorkerGets = len(WordList/NumberOfWorkers)
+    EachWorkerGets = len(WordList)/NumberOfWorkers
+    print "Length of WordList:", len(WordList)
+    print "Each worker gets:", EachWorkerGets
     
-    WorkedWords = []
+    Derivations = []
     
     for Worker in range(0,NumberOfWorkers):
         
-        WorkerWords = Wordlist[(Worker*EachWorkerGets):(Worker*(EachWorkerGets+1))]
+        WorkerWords = WordList[(Worker*EachWorkerGets):(Worker*(EachWorkerGets+1))]
         
-        DoWork = JobServer.submit(ApplyRules, (WorkerWords,), (Transform, Rules.Transform,), (Rules,))
+        DoWork = JobServer.submit(ApplyRules, (WorkerWords,), (Transform, Rules.Transform,), ("Rules",))
         
         WhatWorkerFinds = DoWork()
         
-        WorkedWords += WhatWorkerFinds
+        Derivations.extend(WhatWorkerFinds)
      
-     WordList += WorkedWords
-     
-     return WordList
+    return Derivations
 
 
 
 
-def DoCycles (EndWord, WordList, MaxCycles, Workers=1):
+def Run (MaxCycles=10, StartWord='MI', EndWord='MU', Workers=1):
+    
+    print StartWord
+    WordList = []
+
+    for Process in range(0,Workers):
+        WordList.append(StartWord)
+    
+    print WordList
 
     ppservers = ()
     JobServer = pp.Server(Workers, ppservers=ppservers)
     print 'Job server started with %s worker processes.' % str(JobServer.get_ncpus())	
-    int (Workers)
-    
-    #Words = len(WordList)
-    #ChunkSize= Words/Workers
-    #print ChunkSize
-    
-    Marker = 0
-    Count = 1
     
     Cycles = 0
     
     while EndWord not in WordList:
     
-        
         Cycles += 1
-        print "Cycles:",Cycles
-        print "List length:", str(len(WordList))
-        #print WordList
         
-        if Cycles >= MaxCycles:
-            return "Could not derive in %s cycles." % MaxCycles
-            
+        if Cycles > MaxCycles:
+            return "Could not derive '%s' in %s cycles." % (EndWord,MaxCycles)
+
         else:
-            WordList = DoleOutJobs(WordList, JobServer, Workers)
+            WordList += DoleOutJobs(WordList, JobServer, Workers)
 
-    return ("Success!", Cycles, EndWord,)
-
-
-def Run (MaxCycles=10, StartWord='MI', EndWord='MIU'):
-
-    Derivatives = [StartWord]   # List of words
-
-    return DoCycles (EndWord, Derivatives, MaxCycles, 2)
+    return ("Success!", Cycles, EndWord, 2)
 	
 	
 
 if __name__ == '__main__':
-    print Run(10, 'MI' 'MIU')
+    print Run(20, 'MI', 'MIUIU', 2)
