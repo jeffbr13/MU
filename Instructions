@@ -1,7 +1,7 @@
 
   
   MU finds whether you can derive one string from another, using the
-  rules printed in Hofstadter's 'Godel, Escher, Bach;..' using a
+  rules printed in Hofstadter's 'Godel, Escher, Bach:..' using a
   breadth-first, brute-force method (now with added cores!).
 
   Arguments:
