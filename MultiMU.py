@@ -70,22 +70,11 @@ def Run (MaxCycles=10, StartWord='MI', EndWord='MU', Workers=1):
 
 if __name__ == '__main__':
     
-    if len(sys.argv) == 1:     #Instructions!
-        print
-        print " MU finds whether you can derive 'MU' from 'MI' using the rules"
-        print " printed in 'Godel, Escher, Bach' (hint - you can't) using a"
-        print " breadth-first, brute-force method (now with added cores!)."
-        print
-        print " Arguments:"
-        print "     1st argument is the number of derivation cycles to compute."
-        print "     2nd argument is the starting string."
-        print "     3rd argument is the string you want to achieve."
-        print "     4th argument is the number of processors to use. Leave blank for auto."
-        print " i.e.  To run 50 cycles with 2 cores and see if it produces 'MI' from 'MU',"
-        print "       then at the command line, while in the right directory, type:"
-        print
-        print "     ./MU 50 'MU' 'MI' 2"
-        print
+    if len(sys.argv)<2:     #Instructions!
+        InstructionsFile = open('Instructions', 'r')
+        Instructions = InstructionsFile.read()
+        InstructionsFile.close()
+        print Instructions
 
     elif sys.argv[1] == 'a':
         print Run(20, 'MI', 'MU')
