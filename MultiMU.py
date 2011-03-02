@@ -13,6 +13,32 @@ def ApplyRules (WordList):
         Derivations.extend(WordDerivatives)
     return Derivations
 
+
+
+
+def DoleOutJobs (WordList, JobServer, NumberOfWorkers):
+
+    EachWorkerGets = len(WordList/NumberOfWorkers)
+    
+    WorkedWords = []
+    
+    for Worker in range(0,NumberOfWorkers):
+        
+        WorkerWords = Wordlist[(Worker*EachWorkerGets):(Worker*(EachWorkerGets+1))]
+        
+        DoWork = JobServer.submit(ApplyRules, (WorkerWords,), (Transform, Rules.Transform,), (Rules,))
+        
+        WhatWorkerFinds = DoWork()
+        
+        WorkedWords += WhatWorkerFinds
+     
+     WordList += WorkedWords
+     
+     return WordList
+
+
+
+
 def DoCycles (EndWord, WordList, MaxCycles, Workers=1):
 
     ppservers = ()
@@ -31,9 +57,6 @@ def DoCycles (EndWord, WordList, MaxCycles, Workers=1):
     
     while EndWord not in WordList:
     
-        Words = len(WordList)
-        ChunkSize = Words/Workers
-        print "ChunkSize:", ChunkSize
         
         Cycles += 1
         print "Cycles:",Cycles
@@ -44,29 +67,16 @@ def DoCycles (EndWord, WordList, MaxCycles, Workers=1):
             return "Could not derive in %s cycles." % MaxCycles
             
         else:
-            Derivations = []
-            for Process in range(0,Workers):
-                OwnChunk = WordList[Marker:(ChunkSize*Count)]
-                print "Marker:", Marker, "  Count:", Count
-                #print "Chunk:", OwnChunk
-                Marker = (ChunkSize*Count)
-                Count += 1
-                Job = JobServer.submit(ApplyRules, (OwnChunk,), (Transform,), ('Rules',))
-                Result = Job()
-                #print "Results:",Result
-                Derivations.extend(Result)
-            WordList.extend(Derivations)
+            WordList = DoleOutJobs(WordList, JobServer, Workers)
 
     return ("Success!", Cycles, EndWord,)
 
 
 def Run (MaxCycles=10, StartWord='MI', EndWord='MIU'):
 
-
     Derivatives = [StartWord]   # List of words
 
-                                            
-    return DoCycles (EndWord, Derivatives, MaxCycles, 1)
+    return DoCycles (EndWord, Derivatives, MaxCycles, 2)
 	
 	
 
