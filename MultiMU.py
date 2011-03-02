@@ -18,18 +18,22 @@ def DoleOutJobs (WordList, JobServer, NumberOfWorkers):
 
     EachWorkerGets = len(WordList)/NumberOfWorkers
     print "Length of WordList:", len(WordList)
-    print "Each worker gets:", EachWorkerGets
+    #print "Each worker gets:", EachWorkerGets
     
     Derivations = []
     
     for Worker in range(0,NumberOfWorkers):
         
-        WorkerWords = WordList[(Worker*EachWorkerGets):(Worker*(EachWorkerGets+1))]
+        StartMarker = (Worker*EachWorkerGets)
+        EndMarker = ((Worker+1)*EachWorkerGets)
+        
+        WorkerWords = WordList[StartMarker:EndMarker]
+        
+        print "Range is:    %s:%s" % (StartMarker,EndMarker)
         
         DoWork = JobServer.submit(ApplyRules, (WorkerWords,), (Transform, Rules.Transform,), ("Rules",))
         
         WhatWorkerFinds = DoWork()
-        
         Derivations.extend(WhatWorkerFinds)
      
     return Derivations
@@ -39,13 +43,10 @@ def DoleOutJobs (WordList, JobServer, NumberOfWorkers):
 
 def Run (MaxCycles=10, StartWord='MI', EndWord='MU', Workers=1):
     
-    print StartWord
+    #Create list to hold strings, with a copy for each processor.
     WordList = []
-
     for Process in range(0,Workers):
         WordList.append(StartWord)
-    
-    print WordList
 
     ppservers = ()
     JobServer = pp.Server(Workers, ppservers=ppservers)
@@ -53,19 +54,15 @@ def Run (MaxCycles=10, StartWord='MI', EndWord='MU', Workers=1):
     
     Cycles = 0
     
-    while EndWord not in WordList:
-    
-        Cycles += 1
-        
+    while EndWord not in WordList:   
+        Cycles += 1       
         if Cycles > MaxCycles:
             return "Could not derive '%s' in %s cycles." % (EndWord,MaxCycles)
-
         else:
             WordList += DoleOutJobs(WordList, JobServer, Workers)
-
     return ("Success!", Cycles, EndWord, 2)
 	
 	
 
 if __name__ == '__main__':
-    print Run(20, 'MI', 'MIUIU', 2)
+    print Run(20, 'MI', 'MIIIIUIIUIUIIUIUU', 2)
