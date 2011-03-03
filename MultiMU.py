@@ -65,7 +65,7 @@ def Run (MaxCycles=10, StartWord='MI', EndWord='MU', Workers=1):
     while EndWord not in WordList:  
         
         if Cycles >= MaxCycles:
-            return "Sorry. '%s' wasn't found in %s cycle(s); took %s seconds on %s core(s)." %(EndWord, Cycles, str(time.time()-InitialiseTime)[:6], Workers)
+            return "Sorry. '%s' wasn't found in %s cycle(s); took %.3f seconds on %s core(s)." %(EndWord, Cycles, (time.time()-InitialiseTime), Workers)
             
         else:
             StartTime = time.time()
@@ -78,7 +78,7 @@ def Run (MaxCycles=10, StartWord='MI', EndWord='MU', Workers=1):
 
  # If the string ends up in the word list, the loop ends,
  # and we get to this return statement.
-    return "Success! '%s' found in %s cycle(s); took %s seconds on %s core(s)." %(EndWord, Cycles, str(time.time()-InitialiseTime)[:6], Workers)
+    return "Success! '%s' found in %s cycle(s); took %.3f seconds on %s core(s)." %(EndWord, Cycles, (time.time()-InitialiseTime), Workers)
 	
  # If this script is run alone (ie, not imported by
  # another) then this bit is run.
