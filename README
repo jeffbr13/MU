@@ -7,7 +7,7 @@ MU uses a breadth-first, brute-force method, and MultiMU (the main version)
 has multi-core support. The Parallel Python library (pp) must be installed.
 
 MultiMU(.py) is the main version.
-MU was the original implementation, now kept for reference.
+MU is the reference single core implementation, and is now deprecated.
 
   Arguments:
     1st argument is the number of derivation cycles to compute.
@@ -19,5 +19,5 @@ MU was the original implementation, now kept for reference.
         (hint - it doesn't) then at the command line, while in the right
         directory, type:
 
-        ./MU 50 'MU' 'MI' 2"
+        ./MultiMU 50 'MU' 'MI' 2"
 
